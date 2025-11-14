@@ -34,7 +34,7 @@ services:
       - MYSQL_USER=domjudge
       - MYSQL_DATABASE=domjudge
       - CONTAINER_TIMEZONE=Asia/Shanghai
-    command: --max-connections=1024 --max-allowed-packet=1G --innodb-log-file-size=512M
+    command: --max-connections=1024 --max-allowed-packet=1G --innodb-log-file-size=512M --innodb_snapshot_isolation=OFF
     healthcheck:
       test: mariadb-admin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       start_period: 10s
@@ -79,3 +79,4 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
