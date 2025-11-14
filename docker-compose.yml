@@ -67,7 +67,7 @@ services:
       domserver: { condition: service_healthy }
     privileged: true
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:
+      - /sys/fs/cgroup:/sys/fs/cgroup
     env_file: judgehost.secret
     environment:
       - CONTAINER_TIMEZONE=Asia/Shanghai
@@ -79,5 +79,6 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
 
 
