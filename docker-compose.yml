@@ -44,7 +44,7 @@ services:
 
   domserver:
     container_name: domserver
-    image: 'domjudge/domserver:8.2.3'
+    image: 'domjudge/domserver:8.3.1'
     restart: unless-stopped
     ports:
       - "80:80"
@@ -60,7 +60,7 @@ services:
       - CONTAINER_TIMEZONE=Asia/Shanghai
 
   judgehost:
-    image: 'domjudge/judgehost:8.2.3'
+    image: 'domjudge/judgehost:8.3.1'
     links:
       - 'domserver:domserver'
     depends_on:
@@ -79,6 +79,7 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
 
 
 
