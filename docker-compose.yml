@@ -23,7 +23,7 @@ version: "3.9"
 services:
   dj-mariadb:
     container_name: dj-mariadb
-    image: mariadb:latest
+    image: mariadb:10.6 # opt: latest
     restart: unless-stopped
     ports:
       - "13306:3306"
@@ -44,7 +44,7 @@ services:
 
   domserver:
     container_name: domserver
-    image: domjudge/domserver:latest
+    image: 'domjudge/domserver:8.2.3'
     restart: unless-stopped
     ports:
       - "80:80"
@@ -60,7 +60,7 @@ services:
       - CONTAINER_TIMEZONE=Asia/Shanghai
 
   judgehost:
-    image: 'domjudge/judgehost:latest'
+    image: 'domjudge/judgehost:8.2.3'
     links:
       - 'domserver:domserver'
     depends_on:
@@ -79,6 +79,7 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
 
 
 
