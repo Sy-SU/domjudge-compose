@@ -58,6 +58,11 @@ services:
       - MYSQL_USER=domjudge
       - MYSQL_DATABASE=domjudge
       - CONTAINER_TIMEZONE=Asia/Shanghai
+    # volumes:
+    #   - ./backups:/opt/domjudge/domserver/backups
+    #   - ./domserver_data/public/images:/opt/domjudge/domserver/webapp/public/images
+    #   - ./domserver_data/public/flags:/opt/domjudge/domserver/webapp/public/flags
+    #   - ./domserver_data/var:/opt/domjudge/domserver/webapp/var 
 
   judgehost:
     image: 'domjudge/judgehost:8.3.1'
@@ -79,6 +84,7 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
 
 
 
