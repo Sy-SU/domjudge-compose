@@ -3,7 +3,6 @@
 ## 1. DOMjudge
 
 ### 1.1 服务器
-
 首先现场赛需要~~自掏腰包~~一台服务器，用于部署 DOMjudge。2024 年新生赛与 2025 年校赛选用的是 ecs.hfc8i.2xlarge 的实例（大概 3 元/小时），8 核 16 G。另外注意选服务器的地域时，建议选中国香港（git 的时候需要翻墙）。
 
 系统选择 Ubuntu 22.04。记得勾选分配公网 IPv4 地址，带宽计费方式选择按使用流量，带宽峰值选 100 Mbps。设置密码后下单即可。
@@ -17,35 +16,29 @@
 #### 1.2.1 系统准备
 
 先执行：
-
 ```bash
 sudo vim /etc/default/grub
 ```
 
 然后把 `GRUB_CMDLINE_LINUX_DEFAULT=""` 改为：
-
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1 isolcpus=2 systemd.unified_cgroup_hierarchy=0"
 ```
 
 再执行：
-
 ```bash
 sudo update-grub
 ```
 
 然后重启服务器：
-
 ```bash
 sudo reboot
 ```
-
 这一步可以直接在控制台重启。
 
 #### 1.2.2 安装 docker 与 docker-compose
 
 首先执行：
-
 ```bash
 # Add Docker's official GPG key:
 sudo apt update
@@ -67,32 +60,27 @@ sudo apt update
 ```
 
 然后执行：
-
 ```bash
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 执行：
-
 ```bash
 curl -SL https://github.com/docker/compose/releases/download/v2.40.3/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
 接下来创建：
-
 ```bash
 sudo mkdir -p /etc/docker-compose
 ```
 
 创建：
-
 ```bash
 sudo vim /etc/systemd/system/docker-compose@.service
 ```
 
 输入以下内容：
-
 ```
 [Unit]
 Description=%i service deployed with docker compose
@@ -110,7 +98,6 @@ WantedBy=multi-user.target
 ```
 
 执行：
-
 ```bash
 sudo systemctl daemon-reload
 ```
@@ -118,7 +105,6 @@ sudo systemctl daemon-reload
 #### 1.2.3 安装 DOMjudge
 
 首先执行：
-
 ```bash
 cd /etc/docker-compose/
 sudo git clone https://github.com/Sy-SU/domjudge-compose.git domjudge
@@ -126,31 +112,26 @@ cd domjudge
 ```
 
 **需要修改 `database.secret` 文件中 `<GET THIS FROM TERMINAL>`。建议使用两个强密码。**
-
 ```bash
 sudo vim database.secret
 ```
 
 然后运行数据库和后端系统，获取 judgehost 的密钥：
-
 ```bash
 sudo docker compose up -d dj-mariadb domserver
 ```
 
 获取 judgehost 的密钥：
-
 ```bash
 sudo docker exec -it domserver cat /opt/domjudge/domserver/etc/restapi.secret
 ```
 
 然后替换 `judgehost.secret` 文件中 `<GET THIS FROM TERMINAL>` 的内容。
-
 ```bash
 sudo vim judgehost.secret
 ```
 
 接下来修改 `docker-compose.yml` 中的：
-
 ```txt
 ...
   judgehost:
@@ -165,7 +146,6 @@ sudo vim judgehost.secret
 按照我校的评测情况，4 个 judgehost 是够的。
 
 然后运行：
-
 ```bash
 sudo docker compose up -d
 ```
@@ -231,7 +211,6 @@ docker-compose up -d
 ```bash
 sudo systemctl enable docker-compose@domjudge.service
 ```
-
 设置开机启动。
 
 通过公网 IP 即可访问。
@@ -244,7 +223,6 @@ sudo systemctl enable docker-compose@domjudge.service
 4. 在 `Clarifications` 中加一下常用的 response，比如：“请仔细读题”，“不予回答”等。
 5. 在 `Display` 中：`Show flags` 关掉，`Show affiliation logos` 开启，`Allow team submission download` 开启，`Show teams on scoreboard` 改为 `After login`。
 6. 修改 `jury/executables/c` 的 run 为：
-
 ```txt
 #!/bin/sh
 
@@ -267,9 +245,7 @@ MEMLIMIT="$1" ; shift
 gcc -x c -DONLINE_JUDGE -std=c11 -Wall -O2 -static -pipe -o "$DEST" "$@" -lm
 exit $?
 ```
-
 7. 修改 `jury/executables/cpp` 的 run 为：
-
 ```txt
 #!/bin/sh
 
@@ -291,9 +267,7 @@ MEMLIMIT="$1" ; shift
 g++ -x c++ -DONLINE_JUDGE -std=c++20 -Wall -O2 -static -pipe -o "$DEST" "$@"
 exit $?
 ```
-
 8. 修改 `jury/executables/java_javac_detect` 的 run 为：
-
 ```txt
 #!/bin/sh
 
@@ -395,9 +369,7 @@ chmod a+x "$DEST"
 
 exit 0
 ```
-
 9. 修改 `jury/executables/py3` 的 run 为：
-
 ```txt
 #!/bin/sh
 
@@ -460,7 +432,6 @@ chmod a+x "$DEST"
 
 exit 0
 ```
-
 10. 在 `jury/categories/4/edit` 中把 obeservers 的 Sortorder 设置成 0。
 
 #### 1.2.5 导入题目
@@ -469,7 +440,6 @@ exit 0
 2. 在 Polygon 中，对每个题 package，然后 download Linux 版本的 package。
 3. 执行 `pipx install p2d` 下载 `p2d` 工具。
 4. 将题目重命名为 `A.zip` 的格式。执行：
-
 ```bash
 p2d --code A --color "#FF0000" -o DJ_A.zip A.zip
 p2d --code B --color "#FF0000" -o DJ_B.zip B.zip
@@ -485,16 +455,13 @@ p2d --code K --color "#FF0000" -o DJ_K.zip K.zip
 p2d --code L --color "#FF0000" -o DJ_L.zip L.zip
 p2d --code M --color "#FF0000" -o DJ_M.zip M.zip
 ```
-
 5. 新建一个 contest，external ID 设成 contest，short name 设置成 contest，Name 设置成比赛的名称：华中农业大学第十五届程序设计竞赛（新生赛）。Activate time 设置成当场比赛开始前两个小时（选手可以进场的时间，设早一点也可以），Start time 设置成正式赛的时间，Scoreboard freeze time 设置成 +04:00:00，End time 设置成 +05:00:00，Scoreboard unfreeze time 设置成 +08:00:00。Medals enabled 设置成 Yes，Medal categories 设置成 Participants，Gold/Silver/Bronze medals 分别设置成 5/10/15，Open contest to all teams 设置成 No，Team categories 勾选 System, Participants, Obeservers，在 Problemset document 中上传题面。然后就可以把 demo contest 删掉了。
 
 6. 在 `jury/import-export#problemarchive` 中，选择 DJ_X.zip，上传即可，然后手动修改气球颜色。这个时候 package 内的提交会自动测，记得看一下时限需不需要调整。
 
 #### 1.2.6 导入队伍
-
 1. 首先下载报名表的收集结果，只需要 姓名、学校、电子邮箱、年级。记得手动去一下重，然后把年级标为对应的选手类别（正式/打星）。按照选手类别为第一关键字，学校为第二关键字，姓名为第三关键字排序。
 2. ![](image.png)把选手信息表添加上述信息（teamid 是选手登录的账号，location 是选手的位置，password 是选手的密码）。执行以下脚本：
-
 ```py
 import json
 from collections import OrderedDict
@@ -638,22 +605,18 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-
 在 `jury/import-export` 中的 `Teams & groups` 一栏，通过 `Import JSON / YAML` 的方式依次选择 `organizations.json`、`teams.json`、`accounts.json`，即可完成队伍导入。
 
 ### 1.3 滚榜
-
 滚榜采用 icpc-tools 中的 resolver 工具。推荐使用 2.6.1160 版本。
 
 首先 finalize 比赛，访问比赛的 api，导出 event-feed：
-
 ```txt
 http://<domjudge url>/api/contests/<cid>/event-feed?stream=false
 例如: http://47.243.212.3/api/contests/contest/event-feed?stream=false
 ```
 
 将 event-feed 后缀改为 `.json`。手动去除所有 data 为 null 的字段。然后将工作目录切换到 `resolver/` 下。执行：
-
 ```bash
 ./award.sh
 ```
@@ -661,7 +624,6 @@ http://<domjudge url>/api/contests/<cid>/event-feed?stream=false
 通过以下脚本导出需要的图片，在 `resolver/` 下新建 `cdp/`，把 `organizationsd/` 和 `teams/` 放进去。
 
 选择 Disk，然后选择 `event-feed.json`。首先将 templates 中替换为：
-
 ```txt
 {"id":"gold-medal","parameters":{"numTeams":"5"}}
 {"id":"silver-medal","parameters":{"numTeams":"10"}}
@@ -671,10 +633,8 @@ http://<domjudge url>/api/contests/<cid>/event-feed?stream=false
 ```
 
 执行：
-
 ```bash
 ICPC_FONT="Microsoft Yahei" ./resolver.sh cdp --display_name "{org.formal_name} --{team.display_name}" --singleStep 70
 ```
-
 即可。
 
