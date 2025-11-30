@@ -78,12 +78,13 @@ services:
       - CONTAINER_TIMEZONE=Asia/Shanghai
     deploy:
       mode: replicated
-      replicas: 4
+      replicas: 6
       endpoint_mode: dnsrr
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 5
+
 
 
 
